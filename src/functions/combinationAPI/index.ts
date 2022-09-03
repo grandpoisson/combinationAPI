@@ -1,11 +1,21 @@
+import { formatJSONResponse } from "@libs/apiGateway";
 import { APIGatewayProxyEvent } from "aws-lambda";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: "from Serverless",
-      path: event.path,
-    }),
-  };
+  const { queryStringParameters = {} } = event;
+
+  const { currency } = queryStringParameters;
+  if (!currency) {
+    return formatJSONResponse({
+      statusCode: 400,
+      data: {
+        message: "Missing currency query parameter",
+      },
+    });
+  }
+  return formatJSONResponse({
+    data: {
+      message: "success",
+    },
+  });
 };
